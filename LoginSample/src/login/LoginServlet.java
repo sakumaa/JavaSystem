@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/LoginServlet")
 public class LoginServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	
+
 	private Connection con = null;
     private ResultSet rs = null;
     private PreparedStatement ps = null;
@@ -45,7 +45,9 @@ public class LoginServlet extends HttpServlet {
         try {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
             con = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/javasystem","root","root");
+                    "jdbc:mysql://javasystem-demo.cwcncfovruyw.us-east-2.rds.amazonaws.com:3306/javasystem","root","javasystem");
+//            con = DriverManager.getConnection(
+//                    "jdbc:mysql://localhost:3306/javasystem","root","");
             ps = con.prepareStatement(
                     "select user_name from user where user_id = ? and password = ?");
             ps.setString(1, userId);
