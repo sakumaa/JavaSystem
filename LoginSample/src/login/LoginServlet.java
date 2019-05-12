@@ -13,6 +13,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import been.User;
 
 /**
  * Servlet implementation class LoginServlet
@@ -49,18 +52,21 @@ public class LoginServlet extends HttpServlet {
 //            con = DriverManager.getConnection(
 //                    "jdbc:mysql://localhost:3306/javasystem","root","");
             ps = con.prepareStatement(
-                    "select user_name from user where user_id = ? and password = ?");
+                    "select user_id, user_name, password from user where user_id = ? and password = ?");
             ps.setString(1, userId);
             ps.setString(2, password);
             rs = ps.executeQuery();
 
-            String userName = null;
+            User loginUser = null;
             while(rs.next()) {
-                userName = rs.getString("user_name");
+            	loginUser = new User(rs.getString("user_id"), rs.getString("user_name"), rs.getString("password"));
             }
 
+            HttpSession session = request.getSession();
+            session.setAttribute("login_user", loginUser);
+
             RequestDispatcher dispatch = null;
-            if (userName != null) {
+            if (loginUser.getName() != null) {
                 dispatch = request.getRequestDispatcher("LoginOK.jsp");
                 dispatch.forward(request, response);
             } else {
