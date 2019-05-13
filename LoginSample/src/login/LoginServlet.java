@@ -90,7 +90,7 @@ public class LoginServlet extends HttpServlet {
         }
 	}
 
-	protected User getLoginUser(Connection con, String userId, String password) throws SQLException {
+	private User getLoginUser(Connection con, String userId, String password) throws SQLException {
 		ps = con.prepareStatement(
 		        "select user_id, user_name, password from user where user_id = ? and password = ?");
         ps.setString(1, userId);
@@ -106,7 +106,7 @@ public class LoginServlet extends HttpServlet {
     	return loginUser;
     }
 
-	protected List<User> getUsers(Connection con) throws SQLException {
+	private List<User> getUsers(Connection con) throws SQLException {
 		List<User> users = new ArrayList<>();
 
 		ps = con.prepareStatement(

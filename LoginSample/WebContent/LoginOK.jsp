@@ -14,23 +14,46 @@ List<User> users = (List<User>)session.getAttribute("users");
 <title>ログイン成功</title>
 </head>
 <style>
+.user_list{
+	border: 3px #888 solid;
+	border-collapse: collapse;
+}
+.user_list th,
+.user_list td{
+	border: 1px #888 solid;
+	padding: 2px 10px;
+}
+.user_list th{
+	background-color: #25f;
+	color: #fff;
+}
+.operate{
+	background-color: #25f;
+	text-align: center;
+}
 </style>
 <body>
     ようこそ、<%= loginUser.getName() %>さん！！
     <br/>
-    <table>
+    <table class="user_list">
     <tr>
     	<th>ID</th>
     	<th>名前</th>
     	<th>パスワード</th>
     	<th>処理</th>
     </tr>
+    <tr class="operate">
+    	<td><input type="text" value="" /></td>
+    	<td><input type="text" value="" /></td>
+    	<td><input type="password" value="" /></td>
+    	<td><input type="button" value="登録" /></td>
+    </tr>
 	<c:forEach var="user" items="${users}" varStatus="status">
 	<tr>
 		<td><c:out value="${user.id}"/></td>
 		<td><c:out value="${user.name}"/></td>
-		<td><c:out value="${user.pass}"/></td>
-		<td><input type="button" value="更新" /><input type="button" value="削除" /></td>
+		<td><c:out value="****"/></td>
+		<td class="operate"><input type="button" value="更新" /><input type="button" value="削除" /></td>
 	</tr>
 	</c:forEach>
     </table>
