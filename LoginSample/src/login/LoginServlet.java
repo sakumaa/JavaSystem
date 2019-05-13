@@ -6,6 +6,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -51,22 +53,16 @@ public class LoginServlet extends HttpServlet {
                     "jdbc:mysql://javasystem-demo.cwcncfovruyw.us-east-2.rds.amazonaws.com:3306/javasystem","root","javasystem");
 //            con = DriverManager.getConnection(
 //                    "jdbc:mysql://localhost:3306/javasystem","root","");
-            ps = con.prepareStatement(
-                    "select user_id, user_name, password from user where user_id = ? and password = ?");
-            ps.setString(1, userId);
-            ps.setString(2, password);
-            rs = ps.executeQuery();
 
-            User loginUser = null;
-            while(rs.next()) {
-            	loginUser = new User(rs.getString("user_id"), rs.getString("user_name"), rs.getString("password"));
-            }
+            User loginUser = getLoginUser(con, userId, password);
+            List<User> users = getUsers(con);
 
             HttpSession session = request.getSession();
             session.setAttribute("login_user", loginUser);
+            session.setAttribute("users", users);
 
             RequestDispatcher dispatch = null;
-            if (loginUser.getName() != null) {
+            if (loginUser != null) {
                 dispatch = request.getRequestDispatcher("LoginOK.jsp");
                 dispatch.forward(request, response);
             } else {
@@ -93,5 +89,35 @@ public class LoginServlet extends HttpServlet {
             }
         }
 	}
+
+	protected User getLoginUser(Connection con, String userId, String password) throws SQLException {
+		ps = con.prepareStatement(
+		        "select user_id, user_name, password from user where user_id = ? and password = ?");
+        ps.setString(1, userId);
+        ps.setString(2, password);
+
+        rs = ps.executeQuery();
+
+        User loginUser = null;
+        while(rs.next()) {
+        	loginUser = new User(rs.getString("user_id"), rs.getString("user_name"), rs.getString("password"));
+        }
+
+    	return loginUser;
+    }
+
+	protected List<User> getUsers(Connection con) throws SQLException {
+		List<User> users = new ArrayList<>();
+
+		ps = con.prepareStatement(
+		        "select user_id, user_name, password from user");
+        rs = ps.executeQuery();
+
+        while(rs.next()) {
+        	users.add(new User(rs.getString("user_id"), rs.getString("user_name"), rs.getString("password")));
+        }
+
+    	return users;
+    }
 
 }
