@@ -43,17 +43,17 @@ List<User> users = (List<User>)session.getAttribute("users");
     	<th>処理</th>
     </tr>
     <tr class="operate">
-    	<td><input type="text" value="" /></td>
-    	<td><input type="text" value="" /></td>
-    	<td><input type="password" value="" /></td>
-    	<td><input type="button" value="登録" /></td>
+    	<td><input name="user_id" type="text" value="" /></td>
+    	<td><input name="user_name" type="text" value="" /></td>
+    	<td><input name="password" type="password" value="" /></td>
+    	<td><input name="register" type="submit" value="登録" /></td>
     </tr>
 	<c:forEach var="user" items="${users}" varStatus="status">
 	<tr>
 		<td><c:out value="${user.id}"/></td>
 		<td><c:out value="${user.name}"/></td>
 		<td><c:out value="****"/></td>
-		<td class="operate"><input type="button" value="更新" /><input type="button" value="削除" /></td>
+		<td class="operate"><input name="update" type="submit" value="更新" /><input name="delete" type="button" value="削除" /></td>
 	</tr>
 	</c:forEach>
     </table>

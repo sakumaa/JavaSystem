@@ -3,22 +3,22 @@ package been;
 import java.io.Serializable;
 
 public class User implements Serializable {
-	private String id;
-	private String name;
-	private String pass;
+	private String user_id;
+	private String user_name;
+	private String password;
 
 	public User() {}
-	public User(String id, String name, String pass) {
-		this.id = id;
-		this.name = name;
-		this.pass = pass;
+	public User(String userId, String userName, String password) {
+		this.user_id = userId;
+		this.user_name = userName;
+		this.password = password;
 	}
 
-	public String getId() {return id;}
-	public String getName() {return name;}
-	public String getPass() {return pass;}
+	public String getId() {return user_id;}
+	public String getName() {return user_name;}
+	public String getPass() {return password;}
 
-	public void setId(String id) {this.id = id;}
-	public void setName(String name) {this.name = name;}
-	public void setPass(String pass) {this.pass = pass;}
+	public void setId(String userId) {this.user_id = userId;}
+	public void setName(String userName) {this.user_name = userName;}
+	public void setPass(String password) {this.password = password;}
 }
