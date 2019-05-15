@@ -43,17 +43,21 @@ List<User> users = (List<User>)session.getAttribute("users");
     	<th>処理</th>
     </tr>
     <tr class="operate">
-    	<td><input name="user_id" type="text" value="" /></td>
-    	<td><input name="user_name" type="text" value="" /></td>
-    	<td><input name="password" type="password" value="" /></td>
-    	<td><input name="register" type="submit" value="登録" /></td>
+		<form method="POST" action="UserManagerServlet">
+	    	<td><input name="user_id" type="text" value="" /></td>
+	    	<td><input name="user_name" type="text" value="" /></td>
+	    	<td><input name="password" type="password" value="" /></td>
+	    	<td><input name="submit" type="submit" value="登録" /></td>
+		</form>
     </tr>
 	<c:forEach var="user" items="${users}" varStatus="status">
 	<tr>
-		<td><c:out value="${user.id}"/></td>
-		<td><c:out value="${user.name}"/></td>
-		<td><c:out value="****"/></td>
-		<td class="operate"><input name="update" type="submit" value="更新" /><input name="delete" type="button" value="削除" /></td>
+		<form method="POST" action="UserManagerServlet">
+			<td><input readonly name="user_id" type="text" value="<c:out value="${user.id}"/>"></td>
+			<td><input name="user_name" type="text" value="<c:out value="${user.name}"/>"></td>
+			<td><input name="password" type="password" placeholder="******" value=""></td>
+			<td class="operate"><input name="submit" type="submit" value="更新" /><input name="submit" type="button" value="削除" /></td>
+		</form>
 	</tr>
 	</c:forEach>
     </table>

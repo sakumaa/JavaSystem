@@ -12,7 +12,7 @@
         <br/>
         パスワード：<input type="password" name="password">
         <br/>
-        <input type="submit" value="ログイン">
+        <input type="submit" name="submit" value="ログイン">
     </form>
 </body>
 </html>
