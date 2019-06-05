@@ -22,10 +22,10 @@ public class UserDao implements Disposable {
 
         try {
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
-//	        con = DriverManager.getConnection(
-//	                "jdbc:mysql://javasystem-demo.cwcncfovruyw.us-east-2.rds.amazonaws.com:3306/javasystem","root","javasystem");
 	        con = DriverManager.getConnection(
-	                "jdbc:mysql://localhost:3306/javasystem","root","root");
+	                "jdbc:mysql://javasystem-demo.cwcncfovruyw.us-east-2.rds.amazonaws.com:3306/javasystem","root","javasystem");
+//	        con = DriverManager.getConnection(
+//	                "jdbc:mysql://localhost:3306/javasystem","root","root");
 
 		} catch (InstantiationException e) {
 			// TODO 自動生成された catch ブロック
@@ -68,6 +68,62 @@ public class UserDao implements Disposable {
         }
 
     	return users;
+    }
+
+	public int addNewUser(String userId, String userName, String password) throws SQLException {
+		PreparedStatement ps = con.prepareStatement(
+		        "insert into user (user_id, user_name, password) values (?, ?, ?)");
+        ps.setString(1, userId);
+        ps.setString(2, userName);
+        ps.setString(3, password);
+
+    	return ps.executeUpdate();
+    }
+
+	public int delUser(String userId) throws SQLException {
+		PreparedStatement ps = con.prepareStatement(
+		        "delete from user where user_id = ?");
+        ps.setString(1, userId);
+
+    	return ps.executeUpdate();
+    }
+
+	public int updUser(String baseId, String userId, String userName, String password) throws SQLException {
+		String sql = "update user set ";
+		int prmNum = 1;
+		List<String> prms = new ArrayList<>();
+
+		if(userId.length() > 0) {
+			sql += "user_id = ?";
+			prms.add(userId);
+		}
+
+		if(userName.length() > 0) {
+			if(prms.size() > 0) {
+				sql += ", ";
+			}
+			sql += "user_name = ?";
+			prms.add(userName);
+		}
+
+		if(password.length() > 0) {
+			if(prms.size() > 0) {
+				sql += ", ";
+			}
+			sql += "password = ?";
+			prms.add(password);
+		}
+
+		sql += " where user_id = ?";
+
+		PreparedStatement ps = con.prepareStatement(sql);
+
+		for (int i = 0; i < prms.size(); i++) {
+			ps.setString(i + 1, prms.get(i));
+		}
+		ps.setString(prms.size() + 1, baseId);
+
+    	return ps.executeUpdate();
     }
 
 	public void dispose() {

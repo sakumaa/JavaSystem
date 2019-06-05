@@ -6,6 +6,7 @@
 <%
 User loginUser = (User)session.getAttribute("login_user");
 List<User> users = (List<User>)session.getAttribute("users");
+String msg = (String)session.getAttribute("msg");
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -31,10 +32,16 @@ List<User> users = (List<User>)session.getAttribute("users");
 	background-color: #25f;
 	text-align: center;
 }
+.msg{
+	font-size: 6px;
+	font-weight: bold;
+	color: red;
+}
 </style>
 <body>
     ようこそ、<%= loginUser.getName() %>さん！！
     <br/>
+    <span class="msg">${msg}</span>
     <table class="user_list">
     <tr>
     	<th>ID</th>
@@ -53,10 +60,12 @@ List<User> users = (List<User>)session.getAttribute("users");
 	<c:forEach var="user" items="${users}" varStatus="status">
 	<tr>
 		<form method="POST" action="UserManagerServlet">
-			<td><input readonly name="user_id" type="text" value="<c:out value="${user.id}"/>"></td>
-			<td><input name="user_name" type="text" value="<c:out value="${user.name}"/>"></td>
-			<td><input name="password" type="password" placeholder="******" value=""></td>
-			<td class="operate"><input name="submit" type="submit" value="更新" /><input name="submit" type="button" value="削除" /></td>
+			<td><input name="user_id" type="text" value="<c:out value="${user.id}"/>">
+			<input name="base_id" type="hidden" value="<c:out value="${user.id}"/>"></td>
+			<td><input name="user_name" type="text" value="<c:out value="${user.name}"/>">
+			<input name="base_name" type="hidden" value="<c:out value="${user.name}"/>"></td>
+			<td><input name="password" type="password" placeholder="（変更時のみ入力）" value=""></td>
+			<td class="operate"><input name="submit" type="submit" value="更新" /><input name="submit" type="submit" value="削除" /></td>
 		</form>
 	</tr>
 	</c:forEach>
