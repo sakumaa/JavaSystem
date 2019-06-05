@@ -1,11 +1,8 @@
 package login;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -13,6 +10,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import been.User;
+import dao.UserDao;
 
 /**
  * Servlet implementation class LoginServlet
@@ -20,10 +21,6 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/LoginServlet")
 public class LoginServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-
-	private Connection con = null;
-    private ResultSet rs = null;
-    private PreparedStatement ps = null;
 
 
 	/**
@@ -39,52 +36,36 @@ public class LoginServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding("UTF-8");
 		String userId = request.getParameter("user_id");
         String password = request.getParameter("password");
+        String submit = request.getParameter("submit");
 
         try {
-            Class.forName("com.mysql.jdbc.Driver").newInstance();
-            con = DriverManager.getConnection(
-                    "jdbc:mysql://javasystem-demo.cwcncfovruyw.us-east-2.rds.amazonaws.com:3306/javasystem","root","javasystem");
-//            con = DriverManager.getConnection(
-//                    "jdbc:mysql://localhost:3306/javasystem","root","");
-            ps = con.prepareStatement(
-                    "select user_name from user where user_id = ? and password = ?");
-            ps.setString(1, userId);
-            ps.setString(2, password);
-            rs = ps.executeQuery();
+            UserDao dao = new UserDao();
+            User loginUser = dao.getLoginUser(userId, password);
+            List<User> users = dao.getUsers();
 
-            String userName = null;
-            while(rs.next()) {
-                userName = rs.getString("user_name");
-            }
+            if(submit.equals("ログイン")) {
+                HttpSession session = request.getSession();
+                session.setAttribute("login_user", loginUser);
+                request.setAttribute("users", users);
 
-            RequestDispatcher dispatch = null;
-            if (userName != null) {
-                dispatch = request.getRequestDispatcher("LoginOK.jsp");
-                dispatch.forward(request, response);
-            } else {
-                dispatch = request.getRequestDispatcher("LoginNG.jsp");
-                dispatch.forward(request, response);
+                RequestDispatcher dispatch = null;
+                if (loginUser != null) {
+                    dispatch = request.getRequestDispatcher("LoginOK.jsp");
+                    dispatch.forward(request, response);
+                } else {
+                    dispatch = request.getRequestDispatcher("LoginNG.jsp");
+                    dispatch.forward(request, response);
+                }
             }
         } catch(SQLException e_sql) {
             e_sql.printStackTrace();
         } catch(Exception e) {
             e.printStackTrace();
         } finally {
-            try {
-                if (con != null) {
-                    con.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (rs != null) {
-                    rs.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+
         }
 	}
 
