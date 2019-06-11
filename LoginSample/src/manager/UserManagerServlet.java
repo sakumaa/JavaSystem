@@ -10,7 +10,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import been.User;
 import dao.UserDao;
@@ -52,8 +51,6 @@ public class UserManagerServlet extends HttpServlet {
         String password = request.getParameter("password");
         boolean isSubmit = false;
 
-        HttpSession session = request.getSession();
-
         try {
             UserDao dao = new UserDao();
             User loginUser = dao.getLoginUser(userId, password);
@@ -63,7 +60,7 @@ public class UserManagerServlet extends HttpServlet {
             	if(userId.length() == 0 || userName.length() == 0 || password.length() == 0) {
             		request.setAttribute("msg", "※ 必要な情報を入力してください！");
             	}else {
-            		if(dao.addNewUser(userId, userName, password) > 0) {
+            		if(dao.addNewUser(new User(userId, userName, password)) > 0) {
             			request.setAttribute("msg", "ユーザーを新規登録しました！");
             		}else {
             			request.setAttribute("msg", "※ ユーザーの新規登録に失敗しました…");
@@ -81,7 +78,7 @@ public class UserManagerServlet extends HttpServlet {
             			userName = "";
             		}
 
-            		if(dao.updUser(baseId, userId, userName, password) > 0) {
+            		if(dao.updUser(baseId, new User(userId, userName, password)) > 0) {
             			request.setAttribute("msg", "ユーザーの更新が完了しました！");
             		}else {
             			request.setAttribute("msg", "※ ユーザーの更新に失敗しました…");
@@ -104,7 +101,6 @@ public class UserManagerServlet extends HttpServlet {
                 dispatch = request.getRequestDispatcher("LoginOK.jsp");
                 dispatch.forward(request, response);
             }else {
-            	session.invalidate();
             	doGet(request, response);
             }
 
