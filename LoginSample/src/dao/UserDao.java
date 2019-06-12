@@ -65,14 +65,21 @@ public class UserDao implements Disposable {
     	return users;
     }
 
-	public int addNewUser(User user) throws SQLException {
-		PreparedStatement ps = con.prepareStatement(
-		        "insert into user (user_id, user_name, password) values (?, ?, ?)");
-        ps.setString(1, user.getId());
-        ps.setString(2, user.getName());
-        ps.setString(3, user.getPass());
+	public int addNewUser(User user) {
+        int result = -1;
+		try {
+        	PreparedStatement ps = con.prepareStatement(
+    		        "insert into user (user_id, user_name, password) values (?, ?, ?)");
+			ps.setString(1, user.getId());
+	        ps.setString(2, user.getName());
+	        ps.setString(3, user.getPass());
+	        result = ps.executeUpdate();
+		} catch (SQLException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		}
 
-    	return ps.executeUpdate();
+    	return result;
     }
 
 	public int delUser(String userId) throws SQLException {
